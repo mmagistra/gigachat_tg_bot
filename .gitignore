@@ -346,3 +346,5 @@ cython_debug/
 local_debug/*
 /.idea/.gitignore
 /.idea/*
+
+*.db
