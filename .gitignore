@@ -345,3 +345,4 @@ cython_debug/
 # local
 local_debug/*
 /.idea/.gitignore
+/.idea/*
