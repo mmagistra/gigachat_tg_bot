@@ -30,16 +30,26 @@ async def new_query(message: Message, user_repo: UserRepository, user_context_re
     """
     try:
         logger.info(f"Пользователь {message.from_user.username} ({message.from_user.id}) нажал кнопку 'Новый запрос'")
-        await message.answer(f'Очищаю историю...', reply_markup=get_new_query_keyboard())
+        await message.answer('🧹 Очищаю историю диалога...', reply_markup=get_new_query_keyboard())
         await message.bot.send_chat_action(message.chat.id, action="typing")
         await user_context_repo.clear_context(message.from_user.id)
-        await message.answer(f'Нейросеть забыла историю. Напишите что угодно, чтобы начать новый разговор',
-                             reply_markup=get_new_query_keyboard(has_history=False))
+        await message.answer(
+            '✅ История успешно очищена!\n\n'
+            'Теперь мы можем начать новую беседу с чистого листа. '
+            'Напиши мне что-нибудь! 💬',
+            reply_markup=get_new_query_keyboard(has_history=False)
+        )
+
     except Exception as e:
         logger.error(f"Ошибка при обращении к нейросети: {e}")
         await message.answer(
-            "❌️ Произошла ошибка при обработке запроса. Попробуйте еще раз.",
-            reply_markup=get_new_query_keyboard()
+            "❌️ **Упс! Что-то пошло не так**\n\n"
+            "Не удалось обработать ваш запрос. Пожалуйста, попробуйте:\n"
+            "• Отправить сообщение снова\n"
+            "• Начать новый диалог через /start\n\n"
+            "Если проблема повторяется — сообщите разработчику 🛠️",
+            reply_markup=get_new_query_keyboard(),
+            parse_mode="Markdown"
         )
 
 
@@ -59,8 +69,13 @@ async def default(message: Message, user_repo: UserRepository, user_context_repo
     except Exception as e:
         logger.error(f"Ошибка при обращении к БД: {e}")
         await message.answer(
-            "❌️ Произошла ошибка при обработке запроса. Попробуйте еще раз.",
-            reply_markup=get_new_query_keyboard()
+            "❌️ **Упс! Что-то пошло не так**\n\n"
+            "Не удалось обработать ваш запрос. Пожалуйста, попробуйте:\n"
+            "• Отправить сообщение снова\n"
+            "• Начать новый диалог через /start\n\n"
+            "Если проблема повторяется — сообщите разработчику 🛠️",
+            reply_markup=get_new_query_keyboard(),
+            parse_mode="Markdown"
         )
         return
     try:
@@ -84,6 +99,11 @@ async def default(message: Message, user_repo: UserRepository, user_context_repo
     except Exception as e:
         logger.error(f"Ошибка при обращении к нейросети: {e}")
         await message.answer(
-            "❌️ Произошла ошибка при обработке запроса. Попробуйте еще раз.",
-            reply_markup=get_new_query_keyboard()
+            "❌️ **Упс! Что-то пошло не так**\n\n"
+            "Не удалось обработать ваш запрос. Пожалуйста, попробуйте:\n"
+            "• Отправить сообщение снова\n"
+            "• Начать новый диалог через /start\n\n"
+            "Если проблема повторяется — сообщите разработчику 🛠️",
+            reply_markup=get_new_query_keyboard(),
+            parse_mode="Markdown"
         )

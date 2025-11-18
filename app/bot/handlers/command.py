@@ -21,13 +21,18 @@ async def cmd_start(message: Message, user_repo: UserRepository, user_context_re
     logger.info(f"Пользователь {message.from_user.username} ({message.from_user.id}) запустил команду /start")
     await message.bot.send_chat_action(message.chat.id, action="typing")
     if await user_repo.user_exists(message.from_user.id):
-        await message.answer(f'Очищаю историю...')
+        await message.answer('🧹 Очищаю историю диалога...')
     await message.bot.send_chat_action(message.chat.id, action="typing")
     await user_repo.get_or_create_user(message.from_user.id, message.from_user.username)
     await user_context_repo.clear_context(message.from_user.id)
-    await message.answer(f"Привет, {message.from_user.first_name}! Я бот, который умеет взаимодействие с Gigachat API. "
-                         f"Напиши /help, чтобы узнать, что я умею",
-                         reply_markup=get_new_query_keyboard(has_history=False))
+    await message.answer(
+        f"👋 Привет, {message.from_user.first_name}!\n\n"
+        f"Я чат-бот на базе нейросети **GigaChat** от Сбербанка. "
+        f"Я помню историю нашей беседы и могу поддержать диалог на любую тему! 💬\n\n"
+        f"Напиши мне что угодно или используй /help для подробной справки.",
+        reply_markup=get_new_query_keyboard(has_history=False),
+        parse_mode="Markdown"
+    )
 
     logger.info(f"Пользователь {await user_repo.get_user_by_id(message.from_user.id)} завершил команду /start")
 
@@ -41,13 +46,19 @@ async def cmd_start(message: Message, user_repo: UserRepository, user_context_re
 @router.message(Command("help"))
 async def cmd_help(message: Message):
     logger.info(f"Пользователь {message.from_user.username} ({message.from_user.id}) запустил команду /help")
-    await message.answer("Ты обратился за помощью? Я помогу!\n\n"
-                         "Все очень просто: напиши мне что угодно и Gigachat ответит тебе. "
-                         "Если ты хочешь чтобы нейросеть забыла историю переписки с тобой, "
-                         "выбери 'Новый запрос' на клавиатуре или напиши /start\n\n"
-                         "Если у тебя есть вопросы по теме того, как я работаю, "
-                         f"то вот ссылка на github: {settings.GITHUB_LINK}."
-                         "Тут ты сможешь найти мой код и более подробное описание моей работы.",
-                         reply_markup=get_new_query_keyboard())
+    await message.answer(
+        "ℹ️ **Как пользоваться ботом**\n\n"
+        "📝 **Общение:** Просто напиши мне что угодно — я отвечу с помощью нейросети GigaChat!\n\n"
+        "🧠 **Память:** Я помню контекст нашего разговора и могу отвечать на вопросы по предыдущим сообщениям.\n\n"
+        "🔄 **Сброс истории:** Нажми кнопку **«Новый запрос»** или отправь команду /start, чтобы начать новый диалог.\n\n"
+        "💻 **Исходный код:** Хочешь узнать, как я устроен? "
+        f"Загляни в мой [GitHub]({settings.GITHUB_LINK})!\n\n"
+        "Задавай любые вопросы — я готов помочь! 🚀",
+        reply_markup=get_new_query_keyboard(),
+        parse_mode="Markdown",
+        disable_web_page_preview=True
+    )
+
+
 
 
